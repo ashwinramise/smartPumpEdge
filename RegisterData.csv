@@ -1,0 +1,52 @@
+,Address,Register name,Scale,Description
+0,207,ActualSetpointManualHI,0.1 ml/h,"The actual setpoint used in operating mode ""Manual""."
+1,208,ActualSetpointManualLO,,Can be set via SetpointManual (register 00106-00107) or via the pump HMI.
+2,209,ActualPulseVolumeHI,1 nl,"The actual pulse volume used in operating mode ""Pulse""."
+3,210,ActualPulseVolumeLO,,Can be set via SetPulseVolume (register 00108-00109) or via the pump HMI.
+4,211,ActualBatchDosingVolumeHI,0.001 ml,Can be set via SetBatchDosingVolume (register 00110-00111) or via the pump
+5,212,ActualBatchDosingVolumeLO,,HMI.
+6,213,ActualBatchDosingTimeHI,0.1 s,"The actual batch dosing time used in operating mode ""Batch""."
+7,214,ActualBatchDosingTimeLO,,Can be set via SetBatchDosingTime (register 00112-00113) or via the pump HMI.
+8,215,ActualPressureMax,0.1 bar,"Actual value of (relative) pressure alarm limit setting.
+Can be set via SetPressureMax (register 00114) or via the pump HMI."
+9,216,ControlSourceStates,Bits,"Status of start/stop control sources, ""1"" means ""Active"". They can be active
+simultaneously.
+Bit 0: Stop via pump HMI
+Bit 1: External stop
+Bit 2: Stop from bus."
+10,217,FaultCode,Enum,
+11,218,WarningCode,Enum,See section 8.11Alarms and warning.
+12,219,WarningBits,Bits,
+13,220,DateTimeYear,,Present value of the internal real-time clock (RTC).
+14,221,DateTimeMonth,,Year (from year 2000)
+15,222,DateTimeDay,BCD,Hour [0-23]
+16,223,DateTimeHour,,Second [0-59]
+17,224,DateTimeMinute,,"15:38:00, April 24 2011, is coded with hexadecimal numbers as:"
+18,225,DateTimeSecond,,"Year = 11h, Month = 04h, Day = 24h, Hour = 15h, Minute = 38h, Second = 00h."
+19,301,DosingPressureMax,Bar,"Maximum dosing pressure, fixed factory-set value for this pump type."
+20,302,DosingCapacityMaxHI,0.1 ml/h,"Maximum dosing capacity, fixed factory-set value for this pump type."
+21,303,DosingCapacityMaxLO,,
+22,304,DosingCapacityReferenceHI,0.1 ml/h,The dosing capacity setpoint shown in the pump display. It represents the actual
+23,305,DosingCapacityReferenceLO,,setpoint belonging to the actual operating mode and dosing state.
+24,306,MeasuredDosingCapacityHI,0.1 ml/h,Measured (actual) dosing capacity. FlowControl bit in control register 00102 must be enabled for this value to be available.
+25,307,MeasuredDosingCapacityLO,,
+26,308,MeasuredPressure,0.1 bar,"Measured absolute pressure.
+FlowControl bit in control register 00102 must be enabled. Except for the
+atmospheric pressure, it corresponds to ""Backpressure"" reading in the display."
+27,309,PulseInputFrequency,1 Hz,"Frequency of pulse input (external pulse input signal or Modbus Pulse command
+in control register 00103)."
+28,310,RemainingDosingVolumeHI,0.001 ml,"Actual remaining volume to be dosed. Used in ""Batch"" mode."
+29,311,RemainingDosingVolumeLO,,
+30,312,VolumeTotalHI,0.001 l,Total volume dosed (non-resettable).
+31,313,VolumeTotalLO,,
+32,314,VolumeTripCounterHI,0.001 l,Dosed-volume trip counter (reset with ResetVolumeCounter command in control
+33,315,VolumeTripCounterLO,,register 00103).
+34,320,NumberOfPowerOns,-,Counts the number of times the pump has been powered on (non-resettable).
+35,321,RunTimeHI,1,Counts the time the DDA pump has been dosing (non-resettable).
+36,322,RunTimeLO,,
+37,323,OperatingHoursHI,1 s,Counts the number of hours the DDA pump has been switched on. It counts both
+38,324,OperatingHoursLO,,when the pump is dosing and when it is not dosing.
+39,325,StrokeCounterHI,-,Counts the number of strokes (non-resettable).
+40,326,StrokeCounterLO,,
+41,327,TimeToNextDosingHI,1 s,"Time before the next dosing takes place (only in ""Timer"" mode)."
+42,328,TimeToNextDosingLO,,
