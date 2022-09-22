@@ -51,7 +51,8 @@ def on_message(client, userdata, msg):
 
 
 # Connect To Client and Get Data
-client = ModbusClient(method='rtu', port='/dev/ttyUSB0', parity='N', baudrate=9600, stopbits=2, auto_open=True) #pi
+client = ModbusClient(method='rtu', port='/dev/ttyUSB0', parity='N', baudrate=9600, stopbits=2, auto_open=True,
+                      timeout=3) #pi
 # client = ModbusClient(method='rtu', port='com3', parity='N', baudrate=9600, stopbits=2, auto_open=True)  # windows
 try:
     conn = client.connect()
@@ -81,8 +82,10 @@ try:
                 mqtt_client.on_disconnect = on_disconnect
                 mqtt_client.subscribe(mqtt_topic)
                 mqtt_client.loop_stop()
-            except:
-                print('There was an issue sending data')
+            except Exception as r:
+                print(f'There was an issue sending data because {r}.. Reconnecting')
+                connection = mqtt_client.connect(broker)
+
             time.sleep(5)
     else:
         print("Error Connecting to Pump")
