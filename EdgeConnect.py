@@ -40,12 +40,20 @@ def on_connect(client, userdata, flags, rc):
 
 def on_disconnect(client, userdata, rc):
     print("Unexpected disconnection.")
+    while True:
+        conn = mqtt_client.connect(broker)
+        print("Reconnecting...")
+        if conn:
+            break
+        else:
+            continue
+
 
 
 def on_message(client, userdata, msg):
     x = msg.payload
     command = json.loads(x)
-    print(command, command['register'][1], command['bit'][1])
+    print(f"Recieved write command {command}")
     writeReg(command['register'][0], command['bit'][0])
     writeReg(command['register'][1], command['bit'][1])
 
