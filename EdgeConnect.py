@@ -9,9 +9,9 @@ import json
 import mqtt_config as config
 
 mqtt_client = mqtt.Client(config.mqtt_client)
-topic = config.publish_topic
+topic = config.domain + config.Location + '/' + config.pumpName
 broker = config.mqtt_broker
-mqtt_topic = config.listen_topic
+mqtt_topic = topic + '/edits'
 
 regs = pd.read_csv('RegisterData.csv')
 holding = regs['Address'].tolist()
@@ -34,6 +34,7 @@ def writeReg(register, bit):
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT Broker!")
+        print(f"Listening on topic: {mqtt_topic}")
     else:
         print(f"Failed to connect, return code {rc}", "Error\t")
 
@@ -66,7 +67,7 @@ try:
     conn = client.connect()
     mqtt_client.connect(broker)
     if conn:
-        print('Connected')
+        print('Connected to Pump!')
         while True:
             # read holding registers from device number 27 formulate data dictionary define data in SparkPlugB structure
             metrics = []
