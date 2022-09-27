@@ -23,7 +23,7 @@ def writeReg(register, bit):
     try:
         conn = client.connect()
         if conn:
-            print('Connected')
+            print('Connected to pump')
             try:
                 client.write_register(address=register, value=bit, unit=1)
                 print("Write Success")
@@ -50,6 +50,7 @@ def on_disconnect(client, userdata, rc):
             break
         else:
             continue
+        time.sleep(5)
 
 
 def on_message(client, userdata, msg):
@@ -105,7 +106,7 @@ try:
                     connection = mqtt_client.connect(broker)
             elif current == last_message:
                 continue
-            time.sleep(2)  # repeat
+            time.sleep(2)  # repeat`
     else:
         print("Error Connecting to Pump")
 except Exception as e:
