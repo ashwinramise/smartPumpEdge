@@ -42,9 +42,9 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_disconnect(client, userdata, rc):
-    print("Unexpected disconnection.")
+    print(f"Unexpected disconnection due to {rc}")
     while True:
-        conn = mqtt_client.connect(broker)
+        conn = mqtt_client.connect(broker, keepalive=60)
         print("Reconnecting...")
         if conn:
             break
@@ -66,7 +66,7 @@ client = ModbusClient(method='rtu', port='/dev/ttyUSB0', parity='N', baudrate=96
 # client = ModbusClient(method='rtu', port='com3', parity='N', baudrate=9600, stopbits=2, auto_open=True)  # windows
 try:
     conn = client.connect()
-    mqtt_client.connect(broker)
+    mqtt_client.connect(broker, keepalive=60)
     if conn:
         print('Connected to Pump!')
         while True:
