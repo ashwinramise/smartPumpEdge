@@ -104,7 +104,6 @@ try:
                     print(f'There was an issue sending data because {r}.. Reconnecting')
                     connection = mqtt_client.connect(broker)
             elif current == last_message:
-                print("No Change in Metrics")
                 continue
             time.sleep(2)  # repeat
     else:
