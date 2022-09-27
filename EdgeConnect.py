@@ -70,6 +70,16 @@ try:
     if conn:
         print('Connected to Pump!')
         while True:
+            try:
+                mqtt_client.loop_start()
+                mqtt_client.on_connect = on_connect
+                mqtt_client.on_message = on_message
+                mqtt_client.on_disconnect = on_disconnect
+                mqtt_client.subscribe(mqtt_topic)
+                mqtt_client.loop_stop()
+            except Exception as r:
+                print(f'There was an issue sending data because {r}.. Reconnecting')
+                connection = mqtt_client.connect(broker)
             # read holding registers from device number 27 formulate data dictionary define data in SparkPlugB structure
             metrics = []
             current = {}
@@ -90,27 +100,12 @@ try:
                 try:
                     mqtt_client.publish(topic, message, qos=0)
                     print(f'{datetime.now()}: published {message} to {topic}')
-                    mqtt_client.loop_start()
-                    mqtt_client.on_connect = on_connect
-                    mqtt_client.on_message = on_message
-                    mqtt_client.on_disconnect = on_disconnect
-                    mqtt_client.subscribe(mqtt_topic)
-                    mqtt_client.loop_stop()
                 except Exception as r:
                     print(f'There was an issue sending data because {r}.. Reconnecting')
                     connection = mqtt_client.connect(broker)
             elif current == last_message:
                 print("No Change in Metrics")
-                try:
-                    mqtt_client.loop_start()
-                    mqtt_client.on_connect = on_connect
-                    mqtt_client.on_message = on_message
-                    mqtt_client.on_disconnect = on_disconnect
-                    mqtt_client.subscribe(mqtt_topic)
-                    mqtt_client.loop_stop()
-                except Exception as r:
-                    print(f'There was an issue sending data because {r}.. Reconnecting')
-                    connection = mqtt_client.connect(broker)
+                continue
             time.sleep(2)  # repeat
     else:
         print("Error Connecting to Pump")
