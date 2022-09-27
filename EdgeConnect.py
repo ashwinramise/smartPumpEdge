@@ -9,9 +9,9 @@ import json
 import mqtt_config as config
 
 mqtt_client = mqtt.Client(config.pumpName)
-topic = config.domain + config.Location + '/' + config.pumpName
+topic = config.domain + 'rawdata/' + config.Location + '/' + config.pumpName
 broker = config.mqtt_broker
-mqtt_topic = topic + '/edits'
+mqtt_topic = config.domain + 'edits/' + config.Location + '/' + config.pumpName
 
 regs = pd.read_csv('RegisterData.csv')
 holding = regs['Address'].tolist()
