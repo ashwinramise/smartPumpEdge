@@ -76,8 +76,8 @@ try:
                                                      unit=1)
                 metrics.append({str(reg): str(read.registers[0])})
             pub_data = {
-                'site': 'digitalHUB',
-                'pump': 'dda1',
+                'site': config.Location,
+                'pump': config.pumpName,
                 'timestamp': str(datetime.now()),
                 'metrics': metrics
             }
