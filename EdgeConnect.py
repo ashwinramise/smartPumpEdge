@@ -12,6 +12,9 @@ mqtt_client = mqtt.Client(config.pumpName)
 topic = config.domain + 'rawdata/' + config.Location + '/' + config.pumpName
 broker = config.mqtt_broker
 mqtt_topic = config.domain + 'edits/' + config.Location + '/' + config.pumpName
+readout_topic = config.domain + 'readoutRequest/' + config.Location + '/' + config.pumpName
+readout_publish = config.domain + 'readout/' + config.Location + '/' + config.pumpName
+
 
 regs = pd.read_csv('RegisterData.csv')
 holding = regs['Address'].tolist()
@@ -31,6 +34,24 @@ def writeReg(register, bit):
                 print(e)
     except Exception as k:
         print(k)
+
+
+def getRegisterData(register_list):
+    data = []
+    for register in register_list:
+        readout = client.read_holding_registers(address=register, count=1,
+                                             unit=1)
+        metrics.append({str(register): str(readout.registers[0])})
+    reqestedData = {
+        'site': config.Location,
+        'pump': config.pumpName,
+        'timestamp': str(datetime.now()),
+        'metrics': data
+    }
+    mqtt_client.publish(readout_publish, reqestedData, qos=0)
+    print('Readout Published')
+
+
 
 
 def on_connect(client, userdata, flags, rc):
@@ -57,8 +78,11 @@ def on_message(client, userdata, msg):
     x = msg.payload
     command = json.loads(x)
     print(f"Recieved write command {command}")
-    writeReg(command['register'][0], command['bit'][0])
-    writeReg(command['register'][1], command['bit'][1])
+    if 'bit' in command.keys():
+        writeReg(command['register'][0], command['bit'][0])
+        writeReg(command['register'][1], command['bit'][1])
+    else:
+        pass
 
 
 # Connect To Client and Get Data
@@ -76,7 +100,7 @@ try:
                 mqtt_client.on_connect = on_connect
                 mqtt_client.on_message = on_message
                 mqtt_client.on_disconnect = on_disconnect
-                mqtt_client.subscribe(mqtt_topic)
+                mqtt_client.subscribe([mqtt_topic, readout_topic])
                 mqtt_client.loop_stop()
             except Exception as r:
                 print(f'There was an issue sending data because {r}.. Reconnecting')
