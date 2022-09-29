@@ -81,8 +81,9 @@ def on_message(client, userdata, msg):
     if 'bit' in command.keys():
         writeReg(command['register'][0], command['bit'][0])
         writeReg(command['register'][1], command['bit'][1])
-    else:
-        pass
+    elif 'command' in command.keys():
+        getRegisterData(command['command'])
+
 
 
 # Connect To Client and Get Data
