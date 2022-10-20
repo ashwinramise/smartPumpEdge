@@ -26,7 +26,7 @@ def writeReg(register, bit):
         if conn:
             print('Connected to pump')
             try:
-                client.write_register(address=register-1, value=bit, unit=1)
+                client.write_register(address=register, value=bit, unit=1)
                 print("Write Success")
             except Exception as e:
                 print(e)
@@ -88,7 +88,7 @@ try:
             metrics = []
             current = {}
             for reg in holding:
-                read = client.read_holding_registers(address=reg-1, count=1,
+                read = client.read_holding_registers(address=reg, count=1,
                                                      unit=1)
                 metrics.append({str(reg): str(read.registers[0])})
                 current.update({str(reg): str(read.registers[0])})
