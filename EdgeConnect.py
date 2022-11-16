@@ -8,7 +8,7 @@ import paho.mqtt.client as mqtt
 import json
 import mqtt_config as config
 
-mqtt_client = mqtt.Client(config.pumpName)
+mqtt_client = mqtt.Client(config.pumpName, clean_session=False)
 topic = config.domain + 'rawdata/' + config.Location + '/' + config.pumpName
 broker = config.mqtt_broker
 mqtt_topic = config.domain + 'edits/' + config.Location + '/' + config.pumpName
