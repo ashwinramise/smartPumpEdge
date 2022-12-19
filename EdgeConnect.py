@@ -9,9 +9,9 @@ import json
 import mqtt_config as config
 
 mqtt_client = mqtt.Client(config.pumpName, clean_session=False)
-topic = config.domain + 'rawdata/' + config.Location + '/' + config.pumpName
+topic = config.domain + 'rawdata/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
 broker = config.mqtt_broker
-mqtt_topic = config.domain + 'edits/' + config.Location + '/' + config.pumpName
+mqtt_topic = config.domain + 'edits/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
 
 
 regs = pd.read_csv('RegisterData.csv')
@@ -45,14 +45,12 @@ def on_connect(client, userdata, flags, rc):
 
 def on_disconnect(client, userdata, rc):
     print(f"Unexpected disconnection due to {rc}")
-    while True:
-        conn = mqtt_client.connect(broker, keepalive=60)
+    try:
         print("Reconnecting...")
-        if conn:
-            break
-        else:
-            continue
+        mqttClient.reconnect()
+    except socket.error:
         time.sleep(5)
+        mqttClient.reconnect()
 
 
 def on_message(client, userdata, msg):
