@@ -7,6 +7,7 @@ import pandas as pd
 import paho.mqtt.client as mqtt
 import json
 import mqtt_config as config
+import socket
 
 mqtt_client = mqtt.Client(config.pumpName, clean_session=False)
 topic = config.domain + 'rawdata/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
@@ -47,10 +48,10 @@ def on_disconnect(client, userdata, rc):
     print(f"Unexpected disconnection due to {rc}")
     try:
         print("Reconnecting...")
-        mqttClient.reconnect()
+        mqtt_client.reconnect()
     except socket.error:
         time.sleep(5)
-        mqttClient.reconnect()
+        mqtt_client.reconnect()
 
 
 def on_message(client, userdata, msg):
@@ -68,7 +69,12 @@ client = ModbusClient(method='rtu', port='/dev/ttyUSB0', parity='N', baudrate=96
 # client = ModbusClient(method='rtu', port='com3', parity='N', baudrate=9600, stopbits=2, auto_open=True)  # windows
 try:
     conn = client.connect()
-    mqtt_client.connect(broker, keepalive=60)
+    # enable TLS
+    mqtt_client.tls_set()  # tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+    # set username and password
+    mqtt_client.username_pw_set(config.mqtt_username, config.mqtt_pass)
+    # connect to HiveMQ Cloud on port 8883
+    mqtt_client.connect(broker, 8883, keepalive=60)
     if conn:
         print('Connected to Pump!')
         while True:
@@ -100,14 +106,14 @@ try:
                 message = json.dumps(pub_data)
                 last_message = current
                 try:
-                    mqtt_client.publish(topic, message, qos=0)
+                    mqtt_client.publish(topic, message, qos=1)
                     print(f'{datetime.now()}: published {message} to {topic}')
                 except Exception as r:
                     print(f'There was an issue sending data because {r}.. Reconnecting')
                     connection = mqtt_client.connect(broker)
             elif current == last_message:
                 continue
-            time.sleep(2)  # repeat`
+            time.sleep(10)  # repeat`
     else:
         print("Error Connecting to Pump")
 except Exception as e:

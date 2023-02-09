@@ -10,10 +10,10 @@ import paho.mqtt.client as mqtt
 import json
 import mqtt_config as config
 
-mqtt_client = mqtt.Client(config.pumpName)
-topic = config.domain + 'rawdata/' + config.Location + '/' + config.pumpName
+mqtt_client = mqtt.Client("MQTT_test")
+topic = config.domain + 'rawdata/' + config.Plant + '/' + "MQTT_test"
 broker = config.mqtt_broker
-mqtt_topic = config.domain + 'edits/' + config.Location + '/' + config.pumpName
+mqtt_topic = config.domain + 'edits/' + config.Plant + '/' + "MQTT_test"
 
 regs = pd.read_csv('RegisterData.csv')
 holding = regs['Address'].tolist()
@@ -47,7 +47,12 @@ requirements = {
     312: [0, 7000],
     308: [0, 20]
 }
-mqtt_client.connect(broker)
+# enable TLS
+mqtt_client.tls_set() #tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+# set username and password
+mqtt_client.username_pw_set(config.mqtt_username, config.mqtt_pass)
+# connect to HiveMQ Cloud on port 8883
+mqtt_client.connect(broker, 8883)
 while True:
     metrics = []
     current = {}
@@ -59,7 +64,7 @@ while True:
             metrics.append({str(reg): str(0)})
             current.update({str(reg): str(0)})
         pub_data = {
-            'site': config.Location,
+            'site': config.Plant,
             'pump': config.pumpName,
             'timestamp': str(datetime.now()),
             'metrics': metrics
@@ -68,7 +73,7 @@ while True:
         message = json.dumps(pub_data)
         last_message = current
         try:
-            mqtt_client.publish(topic, message, qos=0)
+            mqtt_client.publish(topic, message, qos=1)
             print(f'{datetime.now()}: published {message} to {topic}')
         except Exception as r:
             print(f'There was an issue sending data because {r}.. Reconnecting')
