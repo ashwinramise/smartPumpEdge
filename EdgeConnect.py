@@ -72,8 +72,8 @@ client = ModbusClient(method='rtu', port='/dev/ttymxc3', parity='N', baudrate=96
 try:
     conn = client.connect()
     # enable TLS
-    mqtt_client.tls_insecure_set(True)
     mqtt_client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS, cert_reqs=ssl.CERT_NONE)
+    mqtt_client.tls_insecure_set(True)
     # set username and password
     mqtt_client.username_pw_set(config.mqtt_username, config.mqtt_pass)
     # connect to HiveMQ Cloud on port 8883
