@@ -4,12 +4,13 @@ from pymodbus.transaction import ModbusRtuFramer
 import time
 from datetime import datetime
 import pandas as pd
-import paho.mqtt.client as mqtt
+import paho.mqtt.client as paho
+from paho import mqtt
 import json
 import mqtt_config as config
 import socket
 
-mqtt_client = mqtt.Client(config.pumpName, clean_session=False)
+mqtt_client = paho.Client(config.pumpName, clean_session=False)
 topic = config.domain + 'rawdata/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
 broker = config.mqtt_broker
 mqtt_topic = config.domain + 'edits/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
@@ -70,7 +71,7 @@ client = ModbusClient(method='rtu', port='/dev/ttymxc3', parity='N', baudrate=96
 try:
     conn = client.connect()
     # enable TLS
-    mqtt_client.tls_set()  # tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+    mqtt_client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
     # set username and password
     mqtt_client.username_pw_set(config.mqtt_username, config.mqtt_pass)
     # connect to HiveMQ Cloud on port 8883
