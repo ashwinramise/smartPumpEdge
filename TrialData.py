@@ -10,6 +10,7 @@ import paho.mqtt.client as paho
 from paho import mqtt
 import json
 import mqtt_config as config
+import ssl
 
 mqtt_client = paho.Client("MQTT_test")
 topic = config.domain + 'rawdata/' + config.Plant + '/' + "MQTT_test"
@@ -49,7 +50,8 @@ requirements = {
     308: [0, 20]
 }
 # enable TLS
-mqtt_client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+mqtt_client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS, cert_reqs=ssl.CERT_NONE)
+mqtt_client.tls_insecure_set(True)
 # set username and password
 mqtt_client.username_pw_set(config.mqtt_username, config.mqtt_pass)
 # connect to HiveMQ Cloud on port 8883
