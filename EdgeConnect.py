@@ -9,6 +9,7 @@ from paho import mqtt
 import json
 import mqtt_config as config
 import socket
+import ssl
 
 mqtt_client = paho.Client(config.pumpName, clean_session=False)
 topic = config.domain + 'rawdata/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
@@ -71,7 +72,8 @@ client = ModbusClient(method='rtu', port='/dev/ttymxc3', parity='N', baudrate=96
 try:
     conn = client.connect()
     # enable TLS
-    mqtt_client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+    mqtt_client.tls_insecure_set(True)
+    mqtt_client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS, cert_reqs=ssl.CERT_NONE)
     # set username and password
     mqtt_client.username_pw_set(config.mqtt_username, config.mqtt_pass)
     # connect to HiveMQ Cloud on port 8883
