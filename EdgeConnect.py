@@ -104,17 +104,17 @@ try:
                 'timestamp': str(datetime.now()),
                 'metrics': metrics
             }
-            #if last_message is None or current != last_message:
-            message = json.dumps(pub_data)
-            last_message = current
-            try:
-                mqtt_client.publish(topic, message, qos=1)
-                print(f'{datetime.now()}: published {message} to {topic}')
-            except Exception as r:
-                print(f'There was an issue sending data because {r}.. Reconnecting')
-                connection = mqtt_client.connect(broker)
-            # elif current == last_message:
-            #     continue
+            if last_message is None or current != last_message:
+                message = json.dumps(pub_data)
+                last_message = current
+                try:
+                    mqtt_client.publish(topic, message, qos=1)
+                    print(f'{datetime.now()}: published {message} to {topic}')
+                except Exception as r:
+                    print(f'There was an issue sending data because {r}.. Reconnecting')
+                    connection = mqtt_client.connect(broker)
+            elif current == last_message:
+                continue
             time.sleep(10)  # repeat`
     else:
         print("Error Connecting to Pump")
