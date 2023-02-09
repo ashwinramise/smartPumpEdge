@@ -64,8 +64,8 @@ def on_message(client, userdata, msg):
 
 
 # Connect To Client and Get Data
-client = ModbusClient(method='rtu', port='/dev/ttyUSB0', parity='N', baudrate=9600, stopbits=2, auto_open=True,
-                      timeout=3)  # pi
+client = ModbusClient(method='rtu', port='/dev/ttymxc3', parity='N', baudrate=9600, stopbits=2, auto_open=True,
+                      timeout=3)  # 7970
 # client = ModbusClient(method='rtu', port='com3', parity='N', baudrate=9600, stopbits=2, auto_open=True)  # windows
 try:
     conn = client.connect()
@@ -83,7 +83,7 @@ try:
                 mqtt_client.on_connect = on_connect
                 mqtt_client.on_message = on_message
                 mqtt_client.on_disconnect = on_disconnect
-                mqtt_client.subscribe(mqtt_topic)
+                mqtt_client.subscribe(mqtt_topic, qos=1)
                 mqtt_client.loop_stop()
             except Exception as r:
                 print(f'There was an issue sending data because {r}.. Reconnecting')
@@ -97,7 +97,7 @@ try:
                 metrics.append({str(reg): str(read.registers[0])})
                 current.update({str(reg): str(read.registers[0])})
             pub_data = {
-                'site': config.Location,
+                'site': config.Plant,
                 'pump': config.pumpName,
                 'timestamp': str(datetime.now()),
                 'metrics': metrics
