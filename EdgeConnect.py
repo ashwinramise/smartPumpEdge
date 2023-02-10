@@ -60,9 +60,11 @@ def on_message(client, userdata, msg):
     x = msg.payload
     command = json.loads(x)
     print(f"Recieved write command {command}")
-    writeReg(command['register'][0], command['bit'][0])
-    writeReg(command['register'][1], command['bit'][1])
-
+    registers, bits = command['register'], command['bit']
+    for i in range(len(registers)):
+        writeReg(registers[i], bits[i])
+    # writeReg(command['register'][0], command['bit'][0])
+    # writeReg(command['register'][1], command['bit'][1])
 
 
 # Connect To Client and Get Data
