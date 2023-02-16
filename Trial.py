@@ -7,6 +7,7 @@ def writefile(k):
         file.writelines(f'This is logfile{k} written at {str(datetime.now())}')
         file.close()
 
+print('Writing files')
 
 for i in range(10):
     writefile(i)
