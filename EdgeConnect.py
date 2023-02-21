@@ -39,7 +39,7 @@ def writeReg(register, bit):
 def getRegData(holds, t=topic):
     mets = []
     for val in holds:
-        out = client.read_holding_registers(address=reg, count=1,
+        out = client.read_holding_registers(address=val, count=1,
                                             unit=1)
         mets.append({str(reg): str(out.registers[0])})
         pingD = {
@@ -48,7 +48,7 @@ def getRegData(holds, t=topic):
             'timestamp': str(datetime.now()),
             'metrics': mets
         }
-        pingR = json.dumps(pub_data)
+        pingR = json.dumps(pingD)
         try:
             mqtt_client.publish(t, pingR, qos=1)
         except Exception as exep:
