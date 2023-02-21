@@ -16,8 +16,7 @@ topic = config.domain + 'rawdata/' + config.Customer + '/' + config.Plant + '/' 
 broker = config.mqtt_broker
 mqtt_topic = config.domain + 'edits/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
 
-
-regs = pd.read_csv('RegisterData.csv')
+regs = pd.read_csv('/root/smartPumpEdge/RegisterData.csv')
 holding = regs['Address'].tolist()
 
 last_message = None
@@ -36,6 +35,26 @@ def writeReg(register, bit):
     except Exception as k:
         print(k)
 
+
+def getRegData(holds):
+    mets = []
+    for val in holds:
+        out = client.read_holding_registers(address=reg, count=1,
+                                            unit=1)
+        mets.append({str(reg): str(out.registers[0])})
+        pingD = {
+            'site': config.Plant,
+            'pump': config.pumpName,
+            'timestamp': str(datetime.now()),
+            'metrics': mets
+        }
+        if last_message is None or current != last_message:
+            pingR = json.dumps(pub_data)
+        try:
+            mqtt_client.publish(topic, pingR, qos=1)
+        except Exception as exep:
+            print(f'There was an issue sending data because {r}.. Reconnecting')
+            mqtt_client.connect(broker)
 
 
 def on_connect(client, userdata, flags, rc):
@@ -59,10 +78,13 @@ def on_disconnect(client, userdata, rc):
 def on_message(client, userdata, msg):
     x = msg.payload
     command = json.loads(x)
-    print(f"Recieved write command {command}")
-    registers, bits = command['register'], command['bit']
-    for i in range(len(registers)):
-        writeReg(registers[i], bits[i])
+    if command['change'] == 'change':
+        # print(f"Recieved write command {command}")
+        registers, bits = command['register'], command['bit']
+        for i in range(len(registers)):
+            writeReg(registers[i], bits[i])
+    elif command['change'] == 'ping':
+        getRegData(holding)
     # writeReg(command['register'][0], command['bit'][0])
     # writeReg(command['register'][1], command['bit'][1])
 
@@ -117,7 +139,7 @@ try:
                     connection = mqtt_client.connect(broker)
             elif current == last_message:
                 continue
-            time.sleep(10)  # repeat`
+            time.sleep(10)  # repeat
     else:
         print("Error Connecting to Pump")
 except Exception as e:
