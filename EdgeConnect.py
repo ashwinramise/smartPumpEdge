@@ -36,7 +36,7 @@ def writeReg(register, bit):
         print(k)
 
 
-def getRegData(holds):
+def getRegData(holds, t=topic):
     mets = []
     for val in holds:
         out = client.read_holding_registers(address=reg, count=1,
@@ -48,10 +48,9 @@ def getRegData(holds):
             'timestamp': str(datetime.now()),
             'metrics': mets
         }
-        if last_message is None or current != last_message:
-            pingR = json.dumps(pub_data)
+        pingR = json.dumps(pub_data)
         try:
-            mqtt_client.publish(topic, pingR, qos=1)
+            mqtt_client.publish(t, pingR, qos=1)
         except Exception as exep:
             print(f'There was an issue sending data because {r}.. Reconnecting')
             mqtt_client.connect(broker)
@@ -85,6 +84,8 @@ def on_message(client, userdata, msg):
             writeReg(registers[i], bits[i])
     elif command['change'] == 'ping':
         getRegData(holding)
+    elif command['change'] == 'req':
+        getRegData(command['register'], t=f'{config.pumpName}/requested')
     # writeReg(command['register'][0], command['bit'][0])
     # writeReg(command['register'][1], command['bit'][1])
 
