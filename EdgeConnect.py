@@ -41,7 +41,7 @@ def getRegData(holds, t=topic):
     for val in holds:
         out = client.read_holding_registers(address=val, count=1,
                                             unit=1)
-        mets.append({str(reg): str(out.registers[0])})
+        mets.append({str(val): str(out.registers[0])})
         pingD = {
             'site': config.Plant,
             'pump': config.pumpName,
