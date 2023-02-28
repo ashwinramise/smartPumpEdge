@@ -16,7 +16,7 @@ topic = config.domain + 'rawdata/' + config.Customer + '/' + config.Plant + '/' 
 broker = config.mqtt_broker
 mqtt_topic = config.domain + 'edits/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
 
-regs = pd.read_csv('/root/smartPumpEdge/RegisterData.csv') # 7970
+regs = pd.read_csv('/root/smartPumpEdge/RegisterData.csv')  # 7970
 # regs = pd.read_csv('RegisterData.csv') # windows
 holding = regs['Address'].tolist()
 
@@ -29,7 +29,7 @@ def writeReg(register, bit):
         if conn:
             print('Connected to pump')
             try:
-                client.write_register(address=register-config.register_offset, value=bit, unit=1)
+                client.write_register(address=register - config.register_offset, value=bit, unit=1)
                 print("Write Success")
             except Exception as e:
                 print(e)
@@ -40,21 +40,21 @@ def writeReg(register, bit):
 def getRegData(holds, t=topic):
     mets = []
     for val in holds:
-        out = client.read_holding_registers(address=val-config.register_offset, count=1,
+        out = client.read_holding_registers(address=val - config.register_offset, count=1,
                                             unit=1)
         mets.append({str(val): str(out.registers[0])})
-        pingD = {
-            'site': config.Plant,
-            'pump': config.pumpName,
-            'timestamp': str(datetime.now()),
-            'metrics': mets
-        }
-        pingR = json.dumps(pingD)
-        try:
-            mqtt_client.publish(t, pingR, qos=1)
-        except Exception as exep:
-            print(f'There was an issue sending data because {r}.. Reconnecting')
-            mqtt_client.connect(broker)
+    pingD = {
+        'site': config.Plant,
+        'pump': config.pumpName,
+        'timestamp': str(datetime.now()),
+        'metrics': mets
+    }
+    pingR = json.dumps(pingD)
+    try:
+        mqtt_client.publish(t, pingR, qos=1)
+    except Exception as exep:
+        print(f'There was an issue sending data because {r}.. Reconnecting')
+        mqtt_client.connect(broker)
 
 
 def on_connect(client, userdata, flags, rc):
@@ -120,7 +120,7 @@ try:
             metrics = []
             current = {}
             for reg in holding:
-                read = client.read_holding_registers(address=reg-config.register_offset, count=1,
+                read = client.read_holding_registers(address=reg - config.register_offset, count=1,
                                                      unit=1)
                 metrics.append({str(reg): str(read.registers[0])})
                 current.update({str(reg): str(read.registers[0])})
