@@ -10,8 +10,9 @@ import json
 import mqtt_config as config
 import socket
 import ssl
+import os
 
-mqtt_client = paho.Client(config.pumpName, clean_session=False)
+mqtt_client = paho.Client(config.pumpName, clean_session=True)
 topic = config.domain + 'rawdata/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
 broker = config.mqtt_broker
 mqtt_topic = config.domain + 'edits/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
@@ -21,6 +22,18 @@ regs = pd.read_csv('/root/smartPumpEdge/RegisterData.csv')  # 7970
 holding = regs['Address'].tolist()
 
 last_message = None
+
+### Status Checks and starts
+
+
+def restartService():
+    try:
+        # stop apache2 service
+        os.popen("sudo systemctl restart smartpump.service")
+        print("smart-pump service restarted successfully...")
+
+    except OSError as ose:
+        print("Error while running the command", ose)
 
 
 def writeReg(register, bit):
@@ -72,7 +85,7 @@ def on_disconnect(client, userdata, rc):
         mqtt_client.reconnect()
     except socket.error:
         time.sleep(5)
-        mqtt_client.reconnect()
+        restartService()
 
 
 def on_message(client, userdata, msg):
@@ -87,6 +100,8 @@ def on_message(client, userdata, msg):
         getRegData(holding)
     elif command['change'] == 'req':
         getRegData(command['register'], t=f'{config.pumpName}/requested')
+    elif command['change'] == 'restart':
+        restartService()
     # writeReg(command['register'][0], command['bit'][0])
     # writeReg(command['register'][1], command['bit'][1])
 
