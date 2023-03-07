@@ -85,7 +85,8 @@ def on_disconnect(client, userdata, rc):
         mqtt_client.reconnect()
     except socket.error:
         time.sleep(5)
-        restartService()
+        mqtt_client.reconnect()
+        # restartService()
 
 
 def on_message(client, userdata, msg):
