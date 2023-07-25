@@ -18,10 +18,9 @@ def getRegData(client, val):
     try:
         out = client.read_holding_registers(address=val, count=1, unit=1)
         metric = {str(val): str(out.registers[0])}
+        return metric
     except Exception as e:
         print(e)
-
-    return metric
 
 
 modbus_client = ModbusClient(method='rtu', port='/dev/ttymxc3', parity='N', baudrate=9600, stopbits=2, auto_open=True,
