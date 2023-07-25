@@ -25,7 +25,7 @@ def getRegData(client, val):
 
 modbus_client = ModbusClient(method='rtu', port='/dev/ttymxc3', parity='N', baudrate=9600, stopbits=2, auto_open=True,
                              timeout=3)
-print(holding[0])
+print(holding[0]-1)
 mets = []
 # for reg in holding:
 #     mets.append(getRegData(modbus_client, reg))
