@@ -18,7 +18,7 @@ def getRegData(client, val):
     connection = client.connect()
     try:
         out = client.read_holding_registers(address=val, count=1, unit=1)
-        while True
+        while True:
             if not out.isError():
                 metric = {str(val): str(out.registers[0])}
                 return metric
