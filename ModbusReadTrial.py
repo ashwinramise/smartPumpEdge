@@ -36,4 +36,4 @@ mets = []
 #     'metrics': mets
 # }
 
-print(getRegData(modbus_client, holding[0]))
+print(getRegData(modbus_client, holding[0]-1))
