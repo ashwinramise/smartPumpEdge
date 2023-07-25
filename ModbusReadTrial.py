@@ -16,7 +16,7 @@ holding = [int(i[0]) for i in k[1:]]
 
 def getRegData(client, val):
     try:
-        out = client.read_holding_registers(address=val, count=1, unit=1)
+        out = client.read_holding_registers(address=val, count=1, unit=2)
         metric = {str(val): str(out.registers[0])}
         return metric
     except Exception as e:
