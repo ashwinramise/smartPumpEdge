@@ -1,3 +1,5 @@
+import time
+
 from pymodbus.pdu import ModbusRequest
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 from pymodbus.transaction import ModbusRtuFramer
@@ -24,7 +26,9 @@ def getRegData(client, val):
                 return metric
                 break
             else:
+                print("Error - Retrying in 3s")
                 continue
+            time.sleep(3)
     except Exception as e:
         print(e)
 
