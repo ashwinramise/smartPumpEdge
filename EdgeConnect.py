@@ -21,7 +21,7 @@ k = []
 with open("RegisterData.csv", "r") as csvfile:
     reader_variable = csv.reader(csvfile, delimiter=",")
     for row in reader_variable:
-        print(row)
+        #print(row)
         k.append(row)
         
 # regs = pd.read_csv('/root/smartPumpEdge/RegisterData.csv')  # 7970
@@ -140,7 +140,7 @@ try:
                 mqtt_client.loop_stop()
             except Exception as r:
                 print(f'There was an issue sending data because {r}.. Reconnecting')
-            # read holding registers from device number 27 formulate data dictionary define data in SparkPlugB structure
+            # read holding registers from device number 1 formulate data dictionary define data in SparkPlugB structure
             metrics = []
             current = {}
             for reg in holding:
