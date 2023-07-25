@@ -30,10 +30,10 @@ def getRegData(client, val):
                 if i < 5:
                     print("Error - Retrying in 3s")
                     i += 1
+                    time.sleep(3)
                     continue
                 else:
                     break
-            time.sleep(3)
     except Exception as e:
         print(e)
 
