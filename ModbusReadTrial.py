@@ -3,6 +3,7 @@ from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 from pymodbus.transaction import ModbusRtuFramer
 from datetime import datetime
 import json
+import csv
 
 k = []
 with open("RegisterData.csv", "r") as csvfile:
