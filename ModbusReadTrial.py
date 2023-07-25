@@ -20,14 +20,19 @@ def getRegData(client, val):
     connection = client.connect()
     try:
         out = client.read_holding_registers(address=val, count=1, unit=1)
+        i=0
         while True:
             if not out.isError():
                 metric = {str(val): str(out.registers[0])}
                 return metric
                 break
             else:
-                print("Error - Retrying in 3s")
-                continue
+                if i < 5:
+                    print("Error - Retrying in 3s")
+                    i += 1
+                    continue
+                else:
+                    break
             time.sleep(3)
     except Exception as e:
         print(e)
