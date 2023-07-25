@@ -23,7 +23,7 @@ def getRegData(client, val):
         print(e)
 
 
-modbus_client = ModbusClient(method='rtu', port='/dev/ttymxc3', parity='N', baudrate=9600, stopbits=2, auto_open=True,
+modbus_client = ModbusClient(method='rtu', port='/dev/ttymxc2', parity='N', baudrate=9600, stopbits=2, auto_open=True,
                              timeout=3)
 while True:
     value = int(input(f'Enter the register number: '))
