@@ -25,14 +25,15 @@ def getRegData(client, val):
 
 modbus_client = ModbusClient(method='rtu', port='/dev/ttymxc3', parity='N', baudrate=9600, stopbits=2, auto_open=True,
                              timeout=3)
-print(holding)
+print(holding[0])
 mets = []
-for reg in holding:
-    mets.append(getRegData(modbus_client, reg))
-pingD = {
-    'site': "test",
-    'pump': "test",
-    'timestamp': str(datetime.now()),
-    'metrics': mets
-}
-print(pingD)
+# for reg in holding:
+#     mets.append(getRegData(modbus_client, reg))
+# pingD = {
+#     'site': "test",
+#     'pump': "test",
+#     'timestamp': str(datetime.now()),
+#     'metrics': mets
+# }
+
+print(getRegData(modbus_client, holding[0]))
