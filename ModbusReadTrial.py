@@ -15,10 +15,16 @@ holding = [int(i[0]) for i in k[1:]]
 
 
 def getRegData(client, val):
+    connection = client.connect()
     try:
         out = client.read_holding_registers(address=val, count=1, unit=1)
-        # metric = {str(val): str(out.registers[0])}
-        return out
+        while True
+            if not out.isError():
+                metric = {str(val): str(out.registers[0])}
+                return metric
+                break
+            else:
+                continue
     except Exception as e:
         print(e)
 
@@ -27,5 +33,7 @@ modbus_client = ModbusClient(method='rtu', port='/dev/ttymxc3', parity='N', baud
                              timeout=3)
 while True:
     value = int(input(f'Enter the register number: '))
-    print(getRegData(modbus_client, value))
+    val = getRegData(modbus_client, value)
+    print(val)
+
 
