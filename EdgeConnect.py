@@ -1,5 +1,5 @@
 from pymodbus.pdu import ModbusRequest
-from pymodbus.client.sync import ModbusSerialClient as ModbusClient
+from pymodbus.client import ModbusSerialClient as ModbusClient
 from pymodbus.transaction import ModbusRtuFramer
 import time
 from datetime import datetime
@@ -11,23 +11,24 @@ import socket
 import ssl
 import os
 import csv
+import pandas as pd
 
 mqtt_client = paho.Client(config.pumpName, clean_session=True)
 topic = config.domain + 'rawdata/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
 broker = config.mqtt_broker
 mqtt_topic = config.domain + 'edits/' + config.Customer + '/' + config.Plant + '/' + config.pumpName
 
-k = []
-with open("RegisterData.csv", "r") as csvfile:
-    reader_variable = csv.reader(csvfile, delimiter=",")
-    for row in reader_variable:
-        #print(row)
-        k.append(row)
+# k = []
+# with open("RegisterData.csv", "r") as csvfile:
+#     reader_variable = csv.reader(csvfile, delimiter=",")
+#     for row in reader_variable:
+#         #print(row)
+#         k.append(row)
         
-# regs = pd.read_csv('/root/smartPumpEdge/RegisterData.csv')  # 7970
+regs = pd.read_csv('/root/smartPumpEdge/RegisterData.csv')  # 7970
 # regs = pd.read_csv('RegisterData.csv') # windows
-# holding = regs['Address'].tolist()
-holding = [int(i[0]) for i in k[1:]]
+holding = regs['Address'].tolist()
+# holding = [int(i[0]) for i in k[1:]]
 
 last_message = None
 
